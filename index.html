@@ -1,0 +1,24 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Algorithm Detective</title>
+<style>
+body{font-family:Arial,"Microsoft YaHei",sans-serif;background:#eef6ff;margin:0;color:#25233a}.wrap{max-width:850px;margin:auto;padding:20px}.card{background:white;border-radius:22px;padding:24px;margin:14px 0;box-shadow:0 6px 25px #0001}h1{text-align:center}h2{margin-top:0}.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:650px){.grid{grid-template-columns:repeat(2,1fr)}}button{border:2px solid #eee;background:#fafafa;border-radius:16px;padding:14px;cursor:pointer;font-size:16px}.choice.selected,.chip.active{border-color:#7567e8;background:#f0eeff}.emoji{display:block;font-size:32px;margin-bottom:5px}.go{text-align:center;margin-top:18px}.go button{background:#7567e8;color:white;border:0}.hidden{display:none}.notice{background:#f6f4ff;border-radius:15px;padding:14px;line-height:1.6}.result{font-size:18px;line-height:1.7}.chips{display:flex;flex-wrap:wrap;gap:10px}.chip{padding:12px;border:2px solid #eee;border-radius:14px;cursor:pointer}.center{text-align:center}
+</style>
+<div class="wrap">
+<div class="card"><h1>🔍 Algorithm Detective</h1><p class="center">谁在决定我下一步看到什么？<br>玩一玩，你来当“算法侦探”！</p></div>
+<div id="s1" class="card"><h2>🎲 第1关：你会选什么？</h2><p>选出3个你现在最想看的内容。</p><div id="choices" class="grid"></div><div class="go"><button id="b1" disabled>让算法来猜 →</button></div></div>
+<div id="s2" class="card hidden"><h2>🤖 第2关：算法猜一猜</h2><p>假装我是推荐算法。我只知道你刚才选过的内容。</p><div class="notice">我的任务：根据你的选择，猜猜你接下来可能喜欢什么。</div><div id="guesses" class="grid"></div><p id="gt" class="result"></p><div class="go"><button id="b2" disabled>继续 →</button></div></div>
+<div id="s3" class="card hidden"><h2>🔄 第3关：给算法更多线索</h2><p>请选择你做过的行为：</p><div class="chips"><span class="chip" data-x="watch">👀 看完了</span><span class="chip" data-x="like">❤️ 点喜欢</span><span class="chip" data-x="repeat">🔁 又看一次</span><span class="chip" data-x="skip">⏭️ 很快划走</span></div><div class="notice">线索越多，算法越容易猜测你的兴趣。</div><div class="go"><button id="b3" disabled>再次推荐 →</button></div></div>
+<div id="s4" class="card hidden"><h2>🧠 第4关：你发现了吗？</h2><div id="rec" class="result"></div><div class="notice"><b>想一想：</b><br>① 为什么推荐越来越像？<br>② 推荐一定是我最想看的吗？<br>③ 如果一直点同一种内容，会发生什么？</div><div class="go"><button id="b4">看看侦探结论 →</button></div></div>
+<div id="s5" class="card hidden"><h2>🏆 结案！</h2><p class="result">👀 <b>我看到什么，会影响我下一步看到什么。</b></p><p class="result">🔄 <b>我的点击、观看和喜欢，会给算法提示。</b></p><p class="result">🧠 <b>推荐只是算法的猜测，我仍然可以自己选择。</b></p><div class="notice"><b>最后问孩子：</b>“下次发现怎么又推荐这个，你会怎么做？”</div><div class="center"><button onclick="location.reload()">再玩一次</button></div></div>
+</div>
+<script>
+const a=[["🐱","猫咪"],["⚽","足球"],["🎮","Minecraft"],["🍰","做蛋糕"],["🏎️","F1"],["🧙","Harry Potter"],["🎨","手工"],["🐶","狗狗"],["✈️","旅行"],["🎬","搞笑视频"]];let sel=[];
+function cards(id){let d=document.getElementById(id);d.innerHTML="";a.forEach((x,i)=>{let b=document.createElement("button");b.className="choice";b.innerHTML='<span class="emoji">'+x[0]+"</span>"+x[1];b.onclick=()=>{if(sel.includes(i)){sel=sel.filter(v=>v!=i);b.classList.remove("selected")}else if(sel.length<3){sel.push(i);b.classList.add("selected")}document.getElementById("b1").disabled=sel.length!=3};d.appendChild(b)})}
+function show(n){for(let i=1;i<=5;i++)document.getElementById("s"+i).classList.toggle("hidden",i!=n)}
+cards("choices");
+b1.onclick=()=>{show(2);cards("guesses");document.querySelectorAll("#guesses button").forEach((b,i)=>b.onclick=()=>{b.classList.add("selected");gt.innerHTML=sel.includes(i)?"🎯 猜得不错！你选过的内容给了算法线索。":"🤔 没猜中！算法也会猜错。";b2.disabled=false})};
+b2.onclick=()=>show(3);
+document.querySelectorAll(".chip").forEach(c=>c.onclick=()=>{c.classList.toggle("active");b3.disabled=!document.querySelector(".chip.active")});
+b3.onclick=()=>{show(4);rec.innerHTML="🤖 <b>算法报告：</b><br><br>根据你之前的选择，我猜你可能还喜欢：<b>"+sel.map(i=>a[i][1]).join("、")+"</b>附近的内容。<br><br>因为你的观看、点击和重复行为，都可能成为我的线索。"};
+b4.onclick=()=>show(5);
+</script></html>
